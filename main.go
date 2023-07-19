@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 //func handlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +41,7 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 	`)
 }
 
-type Router struct{}
+/*type Router struct{}
 
 func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
@@ -52,11 +54,21 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "Page not found", http.StatusNotFound)
 	}
-}
+}*/
 
 func main() {
 	//http.HandleFunc("/", handlerFunc)
-	var router Router
+	//var router Router
+
+	r := chi.NewRouter()
+
+	r.Get("/", homeHandler)
+	r.Get("/contact", contactHandler)
+	r.Get("/faq", faqHandler)
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Page not found", http.StatusNotFound)
+	})
+
 	fmt.Println("Starting the server on :3000...")
-	http.ListenAndServe(":3000", router)
+	http.ListenAndServe(":3000", r)
 }
